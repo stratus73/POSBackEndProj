@@ -1,7 +1,7 @@
 public class ToolInfo
 {
-    ToolType TypeInfo;
-    ToolCode CodeInfo;
+    ToolType TypeInfo;      // Full info (charge data, e.g.) for the specified tool type
+    ToolCode CodeInfo;      // Tool name / brand for the specified tool
 
     public ToolInfo ()
     {

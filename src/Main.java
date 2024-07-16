@@ -9,7 +9,7 @@ public class Main {
     // Rental Agreement object, encapsulates the business logic for us
     static RentalHandler rentalObj;
 
-    private static String GetConsoleInput ()
+    private static String getConsoleInput ()
     {
         // Use a buffered reader to get the input string from the user
         BufferedReader rdr = new BufferedReader(new InputStreamReader(System.in));
@@ -26,35 +26,35 @@ public class Main {
         return selection;
     }
 
-    private static String GetUserToolSelection (ArrayList<ToolInfo> Tools)
+    private static String getUserToolSelection (ArrayList<ToolInfo> Tools)
     {
-        System.out.println ("Enter a tool for rental or \"X\" to exit the POS tool:");
+        System.out.println ("Enter a tool code for rental or \"X\" to exit the POS tool:");
 
         for (ToolInfo tool : Tools)
         {
             System.out.printf ("\t%s\t%s\t%s\r\n", tool.getCode(), tool.getType(), tool.getBrand());
         }
 
-        return GetConsoleInput();
+        return getConsoleInput();
     }
 
-    private static int PromptAndRetrieveInt (String sPrompt)
+    private static int promptAndRetrieveInt (String sPrompt)
     {
         System.out.println (sPrompt);
-        return Integer.parseInt (GetConsoleInput());
+        return Integer.parseInt (getConsoleInput());
     }
 
-    private static int GetUserDayCount ()
+    private static int getUserDayCount ()
     {
-        return PromptAndRetrieveInt("Enter the number of days the customer wants to rent the tool for: ");
+        return promptAndRetrieveInt("Enter the number of days the customer wants to rent the tool for: ");
     }
 
-    private static int GetUserDiscount ()
+    private static int getUserDiscount ()
     {
-        return PromptAndRetrieveInt("Enter the % discount for the customer (between 0 and 100): ");
+        return promptAndRetrieveInt("Enter the % discount for the customer (between 0 and 100): ");
     }
 
-    private static boolean IsValidTC (String sTC)
+    private static boolean isValidTC (String sTC)
     {
         // An empty or NULL string is invalid
         if (null == sTC || sTC.isEmpty())
@@ -73,7 +73,7 @@ public class Main {
         }
     }
 
-    private static boolean IsExitCode (String sCode)
+    private static boolean isExitCode (String sCode)
     {
         if (null != sCode && sCode.equals("X"))
         {
@@ -91,7 +91,7 @@ public class Main {
         rentalObj = new RentalHandler();
 
         // Get the tool options to display to the user
-        ToolRet tr = rentalObj.GetAvailableTools ();
+        ToolRet tr = rentalObj.getAvailableTools ();
 
         if (!tr.Success)
         {
@@ -102,27 +102,27 @@ public class Main {
         {
             boolean bContinue = true;
             while (bContinue) {
-                String tc = GetUserToolSelection(tr.Tools);
-                if (IsValidTC(tc)) {
-                    int days = GetUserDayCount();
-                    int discPerc = GetUserDiscount();
+                String tc = getUserToolSelection(tr.Tools);
+                if (isValidTC(tc)) {
+                    int days = getUserDayCount();
+                    int discPerc = getUserDiscount();
 
                     RentalParams params = new RentalParams();
                     params.CheckoutDate = LocalDate.now();
                     params.ToolCode = tc;
                     params.RentalDayCount = days;
                     params.DiscountPerc = discPerc;
-                    RentalAgreement agmnt = rentalObj.GenerateAgreement(params);
+                    RentalAgreement agmnt = rentalObj.generateAgreement(params);
                     if (!agmnt.Status.Success)
                     {
                         System.out.println ("Error generating rental agreement: " + agmnt.Status.Message);
                     }
                     else
                     {
-                        agmnt.PrintToConsole ();
+                        agmnt.printToConsole ();
                     }
                 }
-                else if (IsExitCode(tc))
+                else if (isExitCode(tc))
                 {
                     bContinue = false;
                 }

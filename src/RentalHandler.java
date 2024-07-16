@@ -1,18 +1,20 @@
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class RentalHandler {
 
     //
     // Data collections for testing / prototyping purposes
     //
-    ArrayList<ToolCode> ToolCodes = new ArrayList<ToolCode>();
-    ArrayList<ToolType> ToolTypes = new ArrayList<ToolType>();
+    ArrayList<ToolCode> ToolCodes = new ArrayList<>();
+    ArrayList<ToolType> ToolTypes = new ArrayList<>();
 
     //
     // For prototyping purposes the data is all self-contained, but normally this
     // data would be retrieved as needed from the database
     //
-    private void InitData ()
+    private void initData ()
     {
         ToolCodes.clear();
         ToolCodes.add (new ToolCode ("CHNS", "Chainsaw", "Stihl"));
@@ -24,17 +26,18 @@ public class RentalHandler {
         ToolTypes.add((new ToolType("Ladder", 1.99, true, true, false)));
         ToolTypes.add((new ToolType("Chainsaw", 1.49, true, false, true)));
         ToolTypes.add((new ToolType("Jackhammer", 2.99, true, false, false)));
+
     }
 
     public RentalHandler ()
     {
-        InitData();
+        initData();
     }
 
-    public ToolRet GetAvailableTools ()
+    public ToolRet getAvailableTools ()
     {
         ToolRet tr = new ToolRet();
-        tr.Tools = new ArrayList<ToolInfo>();
+        tr.Tools = new ArrayList<>();
 
         // Add a tool to the output for each item in our ToolCode data set
         for (ToolCode toolCode : ToolCodes)
@@ -50,39 +53,12 @@ public class RentalHandler {
         return tr;
     }
 
-    private BaseRet ValidateInput (RentalParams paramsIn)
-    {
-        BaseRet ret = new BaseRet();
-        ret.Success = true;
-        ret.Message = "";
-
-        if (null == paramsIn)
-        {
-            ret.Success = false;
-            ret.Message = "Invalid parameters entered, please try again.";
-        }
-        else if (0 >= paramsIn.RentalDayCount)
-        {
-            ret.Success = false;
-            ret.Message = "Rental days must be 1 or greater.";
-        }
-        else if (0 > paramsIn.DiscountPerc || 100 < paramsIn.DiscountPerc)
-        {
-            ret.Success = false;
-            ret.Message = "Discount percent must be between 0 and 100.";
-        }
-
-        return ret;
-    }
-
-    public RentalAgreement GenerateAgreement (RentalParams paramsIn)
-    {
+    public RentalAgreement generateAgreement (RentalParams paramsIn) {
         RentalAgreement ret = new RentalAgreement(paramsIn);
-        ret.Status = ValidateInput (paramsIn);
+        ret.Status = paramsIn.validateInput();
 
         // If the input validation failed then simply return
-        if (!ret.Status.Success)
-        {
+        if (!ret.Status.Success) {
             return ret;
         }
 
@@ -98,34 +74,14 @@ public class RentalHandler {
 
             ret.ToolIn = tp;
             ret.CodeInfo = tc;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             ret.Status.Success = false;
             ret.Status.Message = "No matching tool was found.";
             return ret;
         }
 
-        // Calculate due date based on checkout date + number of days requested
-        // and store it
-        ret.DueDate = paramsIn.CheckoutDate.plusDays(paramsIn.RentalDayCount);
-
-        // Start with charge days == requested # of rental days and then remove non-charged days as needed
-        ret.ChargeDays = paramsIn.RentalDayCount;
-
-        //
-        // Remove non-charged days from the count based on any no-charge rules for the
-        // specified tool
-        //
-
-        // Calculate the rental charge before any discounts and store it
-        ret.PreDiscCharge = ret.ToolIn.DailyCharge * ret.ChargeDays;
-
-        // Calculate the discount, if any, and store it
-        ret.DiscAmt = (paramsIn.DiscountPerc / 100.0) * ret.PreDiscCharge;
-
-        // Calculate the final charge and store it
-        ret.FinalCharge = ret.PreDiscCharge - ret.DiscAmt;
+        // Perform rental agreement calculations
+        ret.performCalcs();
 
         // Return the filled-in agreement
         return ret;
