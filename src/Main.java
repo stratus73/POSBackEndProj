@@ -114,16 +114,16 @@ public class Main {
                     params.DiscountPerc = discPerc;
                     try
                     {
-                    RentalAgreement agmnt = rentalObj.generateAgreement(params);
-                    if (!agmnt.Status.Success)
-                    {
-                        System.out.println ("Error generating rental agreement: " + agmnt.Status.Message);
-                    }
-                    else
-                    {
-                        // Show the agreement on the console
-                        agmnt.printToConsole ();
-                    }
+                        RentalAgreement agmnt = rentalObj.generateAgreement(params);
+                        if (!agmnt.Status.Success)
+                        {
+                            System.out.println ("Error generating rental agreement: " + agmnt.Status.Message);
+                        }
+                        else
+                        {
+                            // Show the agreement on the console
+                            agmnt.printToConsole ();
+                        }
                     }
                     catch (Exception exc)
                     {
