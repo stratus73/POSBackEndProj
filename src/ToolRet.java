@@ -6,6 +6,6 @@ public class ToolRet extends BaseRet
 
     public ToolRet ()
     {
-        Tools = new ArrayList<ToolCode>();
+        Tools = new ArrayList<>();
     }
 }
