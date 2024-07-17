@@ -1,8 +1,6 @@
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.time.LocalDate;
 
-public class RentalHandler {
+public class Checkout {
 
     //
     // Data collections for testing / prototyping purposes
@@ -29,7 +27,7 @@ public class RentalHandler {
 
     }
 
-    public RentalHandler ()
+    public Checkout()
     {
         initData();
     }
@@ -50,13 +48,13 @@ public class RentalHandler {
         return tr;
     }
 
-    public RentalAgreement generateAgreement (RentalParams paramsIn) {
+    public RentalAgreement generateAgreement (RentalParams paramsIn) throws Exception {
         RentalAgreement ret = new RentalAgreement(paramsIn);
         ret.Status = paramsIn.validateInput();
 
         // If the input validation failed then simply return
         if (!ret.Status.Success) {
-            return ret;
+            throw (new Exception (ret.Status.Message));
         }
 
         // Get full code and charge information for the specified tool code or

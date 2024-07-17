@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Main {
 
     // Rental Agreement object, encapsulates the business logic for us
-    static RentalHandler rentalObj;
+    static Checkout rentalObj;
 
     private static String getConsoleInput ()
     {
@@ -83,7 +83,7 @@ public class Main {
     public static void main(String[] args) {
 
         // Initialize our rental object
-        rentalObj = new RentalHandler();
+        rentalObj = new Checkout();
 
         // Get the tool options to display to the user
         ToolRet tr = rentalObj.getAvailableTools ();
@@ -112,6 +112,8 @@ public class Main {
                     params.ToolCode = tc;
                     params.RentalDayCount = days;
                     params.DiscountPerc = discPerc;
+                    try
+                    {
                     RentalAgreement agmnt = rentalObj.generateAgreement(params);
                     if (!agmnt.Status.Success)
                     {
@@ -121,6 +123,11 @@ public class Main {
                     {
                         // Show the agreement on the console
                         agmnt.printToConsole ();
+                    }
+                    }
+                    catch (Exception exc)
+                    {
+                        System.out.println ("There was an error generating the agreement: " + exc.getMessage());
                     }
                 }
                 else if (isExitCode(tc))
