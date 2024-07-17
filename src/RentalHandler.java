@@ -40,12 +40,9 @@ public class RentalHandler {
         tr.Tools = new ArrayList<>();
 
         // Add a tool to the output for each item in our ToolCode data set
-        for (ToolCode toolCode : ToolCodes)
-        {
-            ToolInfo tool = new ToolInfo();
-            tool.setToolCode (toolCode);
-            tr.Tools.add (tool);
-        }
+        // Note that this would usually involve database operations, but is simplified here
+        // for prototype / test purposes
+        tr.Tools.addAll(ToolCodes);
 
         tr.Success = true;
         tr.Message = "";

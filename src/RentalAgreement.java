@@ -1,3 +1,6 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -37,11 +40,13 @@ public class RentalAgreement
         ChargeDays = remNonChargeDays (ParamsIn.CheckoutDate, ParamsIn.RentalDayCount, ToolIn.WeekdayCharge,
                 ToolIn.WeekendCharge, ToolIn.HolidayCharge);
 
-        // Calculate the rental charge before any discounts
-        PreDiscCharge = ToolIn.DailyCharge * ChargeDays;
+        // Calculate the rental charge before any discounts (rounded half-up to cents)
+        PreDiscCharge = new BigDecimal(ToolIn.DailyCharge * ChargeDays).
+                setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-        // Calculate the discount, if any
-        DiscAmt = (ParamsIn.DiscountPerc / 100.0) * PreDiscCharge;
+        // Calculate the discount, if any (rounded half up to cents)
+        DiscAmt = new BigDecimal((ParamsIn.DiscountPerc / 100.0) * PreDiscCharge).
+            setScale(2, RoundingMode.HALF_UP).doubleValue();
 
         // Calculate the final charge
         FinalCharge = PreDiscCharge - DiscAmt;

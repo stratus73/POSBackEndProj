@@ -26,13 +26,13 @@ public class Main {
         return selection;
     }
 
-    private static String getUserToolSelection (ArrayList<ToolInfo> Tools)
+    private static String getUserToolSelection (ArrayList<ToolCode> Tools)
     {
         System.out.println ("Enter a tool code for rental or \"X\" to exit the POS tool:");
 
-        for (ToolInfo tool : Tools)
+        for (ToolCode tool : Tools)
         {
-            System.out.printf ("\t%s\t%s\t%s\r\n", tool.getCode(), tool.getType(), tool.getBrand());
+            System.out.printf ("\t%s\t%s\t%s\r\n", tool.ToolCode, tool.ToolType, tool.Brand);
         }
 
         return getConsoleInput();
@@ -56,13 +56,8 @@ public class Main {
 
     private static boolean isValidTC (String sTC)
     {
-        // An empty or NULL string is invalid
-        if (null == sTC || sTC.isEmpty())
-        {
-            return false;
-        }
-        // "X" means Exit, so not a valid tool code...
-        else if (sTC.equals("X"))
+        // An empty or NULL string is invalid and "X" means Exit, so not a valid tool code...
+        if (null == sTC || sTC.isEmpty() || sTC.equals("X"))
         {
             return false;
         }
@@ -100,13 +95,18 @@ public class Main {
         }
         else
         {
+            // Show the UI, ask the user for rental parameters, generate and display
+            // the rental agreement, and then repeat until the user enters "X" to exit
             boolean bContinue = true;
             while (bContinue) {
+
+                // Get the rental parameters from the user
                 String tc = getUserToolSelection(tr.Tools);
                 if (isValidTC(tc)) {
                     int days = getUserDayCount();
                     int discPerc = getUserDiscount();
 
+                    // Generate an agreement based on the entered parameters
                     RentalParams params = new RentalParams();
                     params.CheckoutDate = LocalDate.now();
                     params.ToolCode = tc;
@@ -119,6 +119,7 @@ public class Main {
                     }
                     else
                     {
+                        // Show the agreement on the console
                         agmnt.printToConsole ();
                     }
                 }

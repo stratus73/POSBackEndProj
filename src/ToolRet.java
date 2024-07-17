@@ -2,10 +2,10 @@ import java.util.ArrayList;
 
 public class ToolRet extends BaseRet
 {
-    ArrayList<ToolInfo> Tools;
+    ArrayList<ToolCode> Tools;
 
     public ToolRet ()
     {
-        Tools = new ArrayList<ToolInfo>();
+        Tools = new ArrayList<ToolCode>();
     }
 }
